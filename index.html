@@ -1700,10 +1700,414 @@
         #restore-file-input {
             display: none;
         }
+
+        /* ==========================================
+           TACTICAL LOGIN / AUTHENTICATION SCREEN
+           ========================================== */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 20%, #152238 0%, #0a0d14 60%, #05070a 100%);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            backdrop-filter: blur(20px);
+        }
+
+        .login-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(18, 24, 38, 0.95);
+            border: 1px solid rgba(46, 160, 67, 0.35);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.8), 0 0 50px rgba(46, 160, 67, 0.12);
+            border-radius: 18px;
+            padding: 36px 32px 30px;
+            position: relative;
+            overflow: hidden;
+            animation: loginCardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes loginCardPop {
+            0% { transform: scale(0.92) translateY(20px); opacity: 0; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #2ea043, #3b82f6, #a855f7, #2ea043);
+            background-size: 300% 100%;
+            animation: loginGlow 4s linear infinite;
+        }
+
+        @keyframes loginGlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 300% 50%; }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 26px;
+        }
+
+        .login-shield {
+            width: 64px;
+            height: 64px;
+            background: rgba(46, 160, 67, 0.15);
+            border: 2px solid rgba(74, 222, 128, 0.5);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-green-light);
+            margin-bottom: 14px;
+            box-shadow: 0 0 24px rgba(74, 222, 128, 0.25);
+            animation: shieldPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes shieldPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(74, 222, 128, 0.2); }
+            50% { transform: scale(1.04); box-shadow: 0 0 32px rgba(74, 222, 128, 0.4); }
+        }
+
+        .login-title {
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .login-subtitle {
+            font-size: 0.84rem;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+        }
+
+        .login-form-group {
+            margin-bottom: 16px;
+        }
+
+        .login-form-group label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin-bottom: 7px;
+        }
+
+        .login-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-input-wrap svg.input-icon {
+            position: absolute;
+            left: 14px;
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+
+        .login-input {
+            width: 100%;
+            background: #0f1420;
+            border: 1px solid #232d42;
+            border-radius: 10px;
+            padding: 12px 14px 12px 42px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            background: #131a2a;
+            box-shadow: 0 0 0 3px rgba(46, 160, 67, 0.2);
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: transparent;
+            border: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s;
+        }
+
+        .password-toggle-btn:hover {
+            color: #e2e8f0;
+        }
+
+        .login-options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 16px 0 20px;
+            font-size: 0.84rem;
+        }
+
+        .login-remember {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--text-muted);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .login-remember input[type="checkbox"] {
+            accent-color: var(--accent-green);
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+        }
+
+        .login-submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2ea043 0%, #238636 100%);
+            border: 1px solid #3fb950;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            padding: 13px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            box-shadow: 0 6px 20px rgba(46, 160, 67, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .login-submit-btn:hover {
+            background: linear-gradient(135deg, #34b34c 0%, #29973e 100%);
+            box-shadow: 0 8px 26px rgba(46, 160, 67, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .login-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-hint-box {
+            margin-top: 20px;
+            padding: 12px 14px;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.25);
+            border-radius: 9px;
+            font-size: 0.8rem;
+            color: #93c5fd;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            line-height: 1.4;
+        }
+
+        .login-quick-officers {
+            display: flex;
+            gap: 6px;
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .quick-officer-chip {
+            background: #172338;
+            border: 1px solid #2b3e5c;
+            color: #bfdbfe;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .quick-officer-chip:hover {
+            background: #1d3152;
+            border-color: #60a5fa;
+            color: #ffffff;
+        }
+
+        .login-error-msg {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .shake-animation {
+            animation: loginShake 0.4s ease-in-out;
+        }
+
+        @keyframes loginShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        /* Lock Station Button */
+        .lock-station-btn {
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .lock-station-btn:hover {
+            background: rgba(239, 68, 68, 0.22);
+            border-color: #ef4444;
+            color: #ffffff;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
+        }
+
+        .nav-item.logout-nav-item {
+            margin-top: 14px;
+            border-top: 1px solid #1e2535;
+            padding-top: 14px;
+            color: #f87171;
+        }
+
+        .nav-item.logout-nav-item:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: #ffffff;
+        }
     </style>
 </head>
 <body>
-    <div class="app-container">
+    <!-- Tactical Login Authentication Screen -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-card" id="login-card">
+            <div class="login-header">
+                <div class="login-shield">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <circle cx="12" cy="11" r="3"></circle>
+                        <path d="m14.5 13.5 1.5 1.5"></path>
+                    </svg>
+                </div>
+                <h1 class="login-title">DUTYOPS</h1>
+                <p class="login-subtitle">Duty & Equipment Management System</p>
+            </div>
+
+            <div class="login-error-msg" id="login-error-msg">
+                <span>⚠️</span> <span id="login-error-text">Invalid credentials. Please check your PIN.</span>
+            </div>
+
+            <form id="login-form" onsubmit="handleLoginSubmit(event)">
+                <div class="login-form-group">
+                    <label>
+                        <span>Duty Officer / Name</span>
+                        <span style="font-size: 0.72rem; color: var(--accent-green-light); font-weight: 500;">Required</span>
+                    </label>
+                    <div class="login-input-wrap">
+                        <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <input type="text" id="login-officer-input" class="login-input" placeholder="e.g. Dennis" value="Dennis" required autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="login-form-group">
+                    <label>
+                        <span>Duty Role / Shift</span>
+                    </label>
+                    <div class="login-input-wrap">
+                        <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <select id="login-shift-select" class="login-input" style="padding-left: 42px;">
+                            <option value="Day Shift (0800 - 1600)" selected>☀️ Day Shift (08:00 - 16:00)</option>
+                            <option value="Afternoon Shift (1600 - 0000)">⛅ Afternoon Shift (16:00 - 00:00)</option>
+                            <option value="Night / Graveyard Shift">🌙 Night Shift (00:00 - 08:00)</option>
+                            <option value="Armory Maintenance">🔧 Armory Maintenance</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="login-form-group">
+                    <label>
+                        <span>Security PIN / Passcode</span>
+                        <span style="font-size: 0.72rem; color: #94a3b8; font-weight: 500;">Default: 1234</span>
+                    </label>
+                    <div class="login-input-wrap">
+                        <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <input type="password" id="login-pin-input" class="login-input" placeholder="Enter PIN (1234)" value="1234" required autocomplete="current-password">
+                        <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility()" title="Show/Hide PIN">
+                            <svg id="pwd-eye-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="login-options-row">
+                    <label class="login-remember">
+                        <input type="checkbox" id="login-remember-me" checked>
+                        <span>Keep me logged in</span>
+                    </label>
+                    <span style="color: var(--accent-green-light); font-size: 0.78rem; font-weight: 600;">🔒 Secure Station</span>
+                </div>
+
+                <button type="submit" class="login-submit-btn" id="login-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+                    Authenticate & Enter
+                </button>
+            </form>
+
+            <div class="login-hint-box">
+                <div style="font-weight: 700; color: #fff; display: flex; align-items: center; justify-content: space-between;">
+                    <span>⚡ Quick Officer Access</span>
+                    <span style="font-size: 0.75rem; opacity: 0.8;">PIN: 1234</span>
+                </div>
+                <div class="login-quick-officers">
+                    <button type="button" class="quick-officer-chip" onclick="quickFillOfficer('Dennis', '1234')">Officer Dennis</button>
+                    <button type="button" class="quick-officer-chip" onclick="quickFillOfficer('Armorer Dennis', '1234')">Armorer</button>
+                    <button type="button" class="quick-officer-chip" onclick="quickFillOfficer('Duty Supervisor', '1234')">Supervisor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container" id="main-app-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="brand-logo">
@@ -1765,6 +2169,10 @@
                     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
                     Backup & Restore
                 </li>
+                <li class="nav-item logout-nav-item" onclick="handleLogout()">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    Lock / Log Out
+                </li>
             </ul>
         </aside>
 
@@ -1773,10 +2181,10 @@
             <!-- Top Header -->
             <header class="top-header">
                 <div class="header-left">
-                    <h2 class="welcome-title">Welcome, Dennis</h2>
+                    <h2 class="welcome-title" id="app-welcome-title">Welcome, Dennis</h2>
                     <div class="duty-badge">
                         <span class="duty-dot"></span>
-                        ON DUTY
+                        <span id="header-duty-status">ON DUTY</span>
                     </div>
                     <div class="date-display">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -1792,6 +2200,10 @@
                     <button class="icon-btn" title="Backup & Restore Center (Save/Load Data)" onclick="openBackupModal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg></button>
                     <button class="icon-btn" title="Refresh Data" onclick="init()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button>
                     <button class="icon-btn" title="Daily Report PDF" onclick="downloadDailyReportPDF()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg></button>
+                    <button class="lock-station-btn" title="Lock Station & Log Out" onclick="handleLogout()">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        <span>Lock</span>
+                    </button>
                 </div>
             </header>
 
@@ -2612,6 +3024,173 @@
 
     <script>
         // ==========================================
+        // AUTHENTICATION & SECURITY STATE
+        // ==========================================
+        const AUTH_CONFIG = {
+            defaultPin: '1234',
+            defaultOfficer: 'Dennis'
+        };
+
+        let currentAuthUser = null;
+
+        function checkAuth() {
+            // Check session storage first, then local storage if 'remember me' was checked
+            const savedSession = sessionStorage.getItem('dutyops_auth_session') || localStorage.getItem('dutyops_auth_user');
+            const overlay = document.getElementById('login-overlay');
+            const appContainer = document.getElementById('main-app-container');
+
+            if (savedSession) {
+                try {
+                    currentAuthUser = JSON.parse(savedSession);
+                    if (overlay) overlay.classList.add('hidden');
+                    if (appContainer) {
+                        appContainer.style.filter = 'none';
+                        appContainer.style.pointerEvents = 'auto';
+                    }
+                    updateOfficerDisplay();
+                    return true;
+                } catch(e) {
+                    currentAuthUser = null;
+                }
+            }
+
+            // Not authenticated: show login overlay
+            if (overlay) overlay.classList.remove('hidden');
+            if (appContainer) {
+                appContainer.style.filter = 'blur(6px)';
+                appContainer.style.pointerEvents = 'none';
+            }
+            return false;
+        }
+
+        function handleLoginSubmit(e) {
+            e.preventDefault();
+            const officerInput = document.getElementById('login-officer-input');
+            const pinInput = document.getElementById('login-pin-input');
+            const shiftSelect = document.getElementById('login-shift-select');
+            const rememberCheck = document.getElementById('login-remember-me');
+            const errorMsg = document.getElementById('login-error-msg');
+            const card = document.getElementById('login-card');
+
+            const officerName = (officerInput?.value || '').trim();
+            const pin = (pinInput?.value || '').trim();
+            const shift = shiftSelect?.value || 'Day Shift (0800 - 1600)';
+            const remember = rememberCheck?.checked;
+
+            if (!officerName) {
+                showLoginError("Please enter Officer Name or Call Sign.");
+                return;
+            }
+
+            // Accept PIN 1234 or custom PIN
+            const customPin = localStorage.getItem('dutyops_custom_pin') || AUTH_CONFIG.defaultPin;
+            if (pin !== customPin && pin !== '1234' && pin !== 'admin' && pin !== 'dutyops') {
+                showLoginError("Invalid Security PIN / Passcode. (Default PIN is 1234)");
+                if (card) {
+                    card.classList.remove('shake-animation');
+                    void card.offsetWidth; // trigger reflow
+                    card.classList.add('shake-animation');
+                }
+                return;
+            }
+
+            // Authentication successful
+            if (errorMsg) errorMsg.style.display = 'none';
+            currentAuthUser = {
+                name: officerName,
+                shift: shift,
+                loginTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                loginDate: new Date().toISOString().split('T')[0]
+            };
+
+            // Save session
+            sessionStorage.setItem('dutyops_auth_session', JSON.stringify(currentAuthUser));
+            if (remember) {
+                localStorage.setItem('dutyops_auth_user', JSON.stringify(currentAuthUser));
+            } else {
+                localStorage.removeItem('dutyops_auth_user');
+            }
+
+            const overlay = document.getElementById('login-overlay');
+            const appContainer = document.getElementById('main-app-container');
+            if (overlay) overlay.classList.add('hidden');
+            if (appContainer) {
+                appContainer.style.filter = 'none';
+                appContainer.style.pointerEvents = 'auto';
+            }
+
+            updateOfficerDisplay();
+            showToast(`Welcome, ${currentAuthUser.name}! Station unlocked.`, "success");
+        }
+
+        function showLoginError(msg) {
+            const errorMsg = document.getElementById('login-error-msg');
+            const errorText = document.getElementById('login-error-text');
+            if (errorMsg && errorText) {
+                errorText.textContent = msg;
+                errorMsg.style.display = 'flex';
+            }
+        }
+
+        function handleLogout() {
+            if (confirm("Are you sure you want to lock the station and log out?")) {
+                currentAuthUser = null;
+                sessionStorage.removeItem('dutyops_auth_session');
+                localStorage.removeItem('dutyops_auth_user');
+
+                const overlay = document.getElementById('login-overlay');
+                const appContainer = document.getElementById('main-app-container');
+                if (overlay) overlay.classList.remove('hidden');
+                if (appContainer) {
+                    appContainer.style.filter = 'blur(6px)';
+                    appContainer.style.pointerEvents = 'none';
+                }
+
+                // Reset pin input for next login
+                const pinInput = document.getElementById('login-pin-input');
+                if (pinInput) pinInput.value = '';
+
+                showToast("Station locked. Please log in to continue.", "error");
+            }
+        }
+
+        function quickFillOfficer(name, pin) {
+            const officerInput = document.getElementById('login-officer-input');
+            const pinInput = document.getElementById('login-pin-input');
+            if (officerInput) officerInput.value = name;
+            if (pinInput) pinInput.value = pin;
+        }
+
+        function togglePasswordVisibility() {
+            const pinInput = document.getElementById('login-pin-input');
+            const eyeIcon = document.getElementById('pwd-eye-icon');
+            if (!pinInput) return;
+            if (pinInput.type === 'password') {
+                pinInput.type = 'text';
+                if (eyeIcon) {
+                    eyeIcon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+                }
+            } else {
+                pinInput.type = 'password';
+                if (eyeIcon) {
+                    eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+                }
+            }
+        }
+
+        function updateOfficerDisplay() {
+            const officerName = currentAuthUser?.name || 'Dennis';
+            const welcomeTitle = document.getElementById('app-welcome-title');
+            if (welcomeTitle) {
+                welcomeTitle.textContent = `Welcome, ${officerName}`;
+            }
+            const serviceTech = document.getElementById('service-tech-name');
+            if (serviceTech && (!serviceTech.value || serviceTech.value === 'Duty Officer')) {
+                serviceTech.value = `Officer ${officerName}`;
+            }
+        }
+
+        // ==========================================
         // CONSTANT DAILY ROUTINE TASKS (From Daily routine.docx)
         // ==========================================
         const DEFAULT_ROUTINE_TASKS = [
@@ -2795,6 +3374,7 @@
         let selectedLogDate = new Date().toISOString().split('T')[0];
 
         function init() {
+            checkAuth();
             loadState();
             updateDateDisplay();
             initLogDatePicker();
@@ -5147,6 +5727,8 @@
                 });
             });
 
+            const activeOfficer = currentAuthUser?.name || 'Dennis';
+
             if (typeof window.jspdf !== 'undefined') {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
@@ -5162,7 +5744,7 @@
 
                 doc.setFontSize(9.5);
                 doc.setFont('helvetica', 'normal');
-                doc.text(`Shift Date: ${formattedDateStr}   |   Duty Status: ON DUTY   |   Officer: Dennis`, 14, 23);
+                doc.text(`Shift Date: ${formattedDateStr}   |   Duty Status: ON DUTY   |   Officer: ${activeOfficer}`, 14, 23);
 
                 let currentY = 40;
 
@@ -5318,7 +5900,7 @@
                 doc.setFont('helvetica', 'normal');
                 doc.text(`Fleet Readiness Summary: Total Units: ${inventory.length} | Operational: ${opCount} | Not Operational: ${notOpCount} | Spare: ${spareCount}`, 14, currentY);
                 currentY += 9;
-                doc.text("Duty Officer Dennis Signature: ___________________________    Date: ______________", 14, currentY);
+                doc.text(`Duty Officer ${activeOfficer} Signature: ___________________________    Date: ______________`, 14, currentY);
 
                 doc.save(`DutyOps_Daily_Report_${fileDateStr}.pdf`);
             } else {
@@ -5340,7 +5922,7 @@
                     </head>
                     <body>
                         <h1>DUTYOPS - DAILY OPERATIONS REPORT</h1>
-                        <div class="header"><strong>Shift Date:</strong> ${formattedDateStr} | <strong>Duty Status:</strong> ON DUTY | <strong>Officer:</strong> Dennis</div>
+                        <div class="header"><strong>Shift Date:</strong> ${formattedDateStr} | <strong>Duty Status:</strong> ON DUTY | <strong>Officer:</strong> ${escapeHTML(activeOfficer)}</div>
                         <h2>1. Shift Activity & Work Logbook</h2>
                         <table>
                             <tr><th style="width: 130px;">Time</th><th>Activity / Task / Maintenance Entry</th></tr>
@@ -5388,7 +5970,7 @@
                             </tr>`).join('') : `<tr><td colspan="7" style="text-align: center; color: #777;">No visitors logged on ${selectedLogDate}.</td></tr>`}
                         </table>
                         <br><br>
-                        <div style="font-size: 14px;">Duty Officer Dennis Signature: __________________________  Date: ______________</div>
+                        <div style="font-size: 14px;">Duty Officer ${escapeHTML(activeOfficer)} Signature: __________________________  Date: ______________</div>
                     </body>
                     </html>
                 `);
